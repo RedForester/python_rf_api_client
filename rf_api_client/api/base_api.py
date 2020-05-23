@@ -2,9 +2,10 @@ from aiohttp import ClientSession
 
 
 class ApiContext:
-    def __init__(self, *, username: str, password: str, base_url: str, read_timeout: float):
+    def __init__(self, *, username: str, password: str, session_id: str, base_url: str, read_timeout: float):
         self.username = username
         self.password = password
+        self.session_id = session_id
         self.base_url = base_url
         self.read_timeout = read_timeout
 

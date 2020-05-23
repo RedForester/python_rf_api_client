@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from aiohttp import ClientSession, BasicAuth
 
 from rf_api_client.utils import md5
@@ -13,10 +15,23 @@ from rf_api_client.api.users_api import UsersApi
 
 
 class RfApiClient:
-    def __init__(self, *, username: str, password: str, base_url: str = "https://app.redforester.com", read_timeout: float = 60):
+    def __init__(
+            self,
+            *,
+            username: str,
+            password: str,
+            session_id: str = None,
+            base_url: str = "https://app.redforester.com",
+            read_timeout: float = 60
+    ):
+        if session_id is None:
+            # todo debug log
+            session_id = str(uuid4())
+
         self._context = ApiContext(
             username=username,
             password=md5(password),
+            session_id=session_id,
             base_url=base_url,
             read_timeout=read_timeout
         )
@@ -24,6 +39,10 @@ class RfApiClient:
         self._session = ClientSession(
             auth=BasicAuth(self._context.username, self._context.password),
             read_timeout=self._context.read_timeout,
+            headers={
+                'SessionId': self._context.session_id,  # todo will be deprecated
+                'Rf-Session-Id': self._context.session_id
+            },
             raise_for_status=True
         )
 
