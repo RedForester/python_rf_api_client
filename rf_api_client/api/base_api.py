@@ -1,4 +1,4 @@
-from aiohttp import ClientSession, BasicAuth
+from aiohttp import ClientSession
 
 
 class ApiContext:
@@ -10,12 +10,14 @@ class ApiContext:
 
 
 class BaseApi:
-    def __init__(self, context: ApiContext):
+    def __init__(self, session: ClientSession, context: ApiContext):
+        self._session = session
         self._context = context
 
-    def get_session(self):
-        return ClientSession(
-            auth=BasicAuth(self._context.username, self._context.password),
-            read_timeout=self._context.read_timeout,
-            raise_for_status=True
-        )
+    @property
+    def session(self):
+        return self._session
+
+    @property
+    def context(self):
+        return self._context
