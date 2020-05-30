@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from aiohttp import ClientSession, BasicAuth
 
+from rf_api_client.log import main_logger as log
 from rf_api_client.utils import md5
 from rf_api_client.api.base_api import ApiContext
 from rf_api_client.api.maps_api import MapsApi
@@ -21,12 +22,14 @@ class RfApiClient:
             username: str,
             password: str,
             session_id: str = None,
-            base_url: str = "https://app.redforester.com",
+            base_url: str = 'https://app.redforester.com',
             read_timeout: float = 60
     ):
         if session_id is None:
-            # todo debug log
             session_id = str(uuid4())
+            log.info(f'New session id is {session_id}')
+        else:
+            log.info(f'Supplied session id is {session_id}')
 
         self._context = ApiContext(
             username=username,
