@@ -2,6 +2,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 from aiohttp import ClientSession, BasicAuth, TraceConfig, TraceRequestStartParams, TraceRequestEndParams
+from yarl import URL
 
 from rf_api_client.log import main_logger as log
 from rf_api_client.utils import md5
@@ -11,8 +12,9 @@ from rf_api_client.api.node_types_api import NodeTypesApi
 from rf_api_client.api.nodes_api import NodesApi
 from rf_api_client.api.users_api import UsersApi
 
-# todo url builder
 # todo ? cookie_jar
+
+DEFAULT_RF_URL = URL('https://app.redforester.com')
 
 
 class RfApiClient:
@@ -22,7 +24,7 @@ class RfApiClient:
             username: str,
             password: str,
             session_id: str = None,
-            base_url: str = 'https://app.redforester.com',
+            base_url: URL = DEFAULT_RF_URL,
             read_timeout: float = 60,
             log_response_body=False,
     ):

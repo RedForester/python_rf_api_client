@@ -1,8 +1,9 @@
 from aiohttp import ClientSession
+from yarl import URL
 
 
 class ApiContext:
-    def __init__(self, *, username: str, password: str, session_id: str, base_url: str, read_timeout: float):
+    def __init__(self, *, username: str, password: str, session_id: str, base_url: URL, read_timeout: float):
         self.username = username
         self.password = password
         self.session_id = session_id
