@@ -12,7 +12,6 @@ from rf_api_client.api.node_types_api import NodeTypesApi
 from rf_api_client.api.nodes_api import NodesApi
 from rf_api_client.api.users_api import UsersApi
 
-# todo ? cookie_jar
 
 DEFAULT_RF_URL = URL('https://app.redforester.com')
 
