@@ -1,6 +1,7 @@
+from types import SimpleNamespace
 from uuid import uuid4
 
-from aiohttp import ClientSession, BasicAuth
+from aiohttp import ClientSession, BasicAuth, TraceConfig, TraceRequestStartParams, TraceRequestEndParams
 
 from rf_api_client.log import main_logger as log
 from rf_api_client.utils import md5
@@ -10,7 +11,6 @@ from rf_api_client.api.node_types_api import NodeTypesApi
 from rf_api_client.api.nodes_api import NodesApi
 from rf_api_client.api.users_api import UsersApi
 
-# todo inspect requests
 # todo url builder
 # todo ? cookie_jar
 
@@ -23,7 +23,8 @@ class RfApiClient:
             password: str,
             session_id: str = None,
             base_url: str = 'https://app.redforester.com',
-            read_timeout: float = 60
+            read_timeout: float = 60,
+            log_response_body=False,
     ):
         if session_id is None:
             session_id = str(uuid4())
@@ -39,6 +40,8 @@ class RfApiClient:
             read_timeout=read_timeout
         )
 
+        self._log_response_body = log_response_body
+
         self._session = ClientSession(
             auth=BasicAuth(self._context.username, self._context.password),
             read_timeout=self._context.read_timeout,
@@ -46,6 +49,7 @@ class RfApiClient:
                 'SessionId': self._context.session_id,  # todo will be deprecated
                 'Rf-Session-Id': self._context.session_id
             },
+            trace_configs=[self.get_trace_config()],
             raise_for_status=True
         )
 
@@ -72,3 +76,28 @@ class RfApiClient:
     async def close_session(self):
         """ Only if you using RfApiClient instance without context manager """
         await self._session.close()
+
+    def get_trace_config(self):
+        trace_config = TraceConfig()
+        trace_config.on_request_start.append(self.on_request_start)
+        trace_config.on_request_end.append(self.on_request_end)
+
+        return trace_config
+
+    async def on_request_start(
+            self,
+            session: ClientSession,
+            trace_config_ctx: SimpleNamespace,
+            params: TraceRequestStartParams
+    ):
+        log.debug(f'Starting request {params}')
+
+    async def on_request_end(
+            self,
+            session: ClientSession,
+            trace_config_ctx: SimpleNamespace,
+            params: TraceRequestEndParams
+    ):
+        log.debug(f'Ending request {params}')
+        if self._log_response_body:
+            log.debug(await params.response.json())
