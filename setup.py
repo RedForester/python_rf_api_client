@@ -23,6 +23,7 @@ setup(
     install_requires=[
         'aiohttp ~= 3.6',
         'pydantic ~= 1.5',
+        'yarl ~= 1.4'
     ],
     include_package_data=True,
     zip_safe=False
