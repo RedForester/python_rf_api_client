@@ -11,6 +11,7 @@ from rf_api_client.api.maps_api import MapsApi
 from rf_api_client.api.node_types_api import NodeTypesApi
 from rf_api_client.api.nodes_api import NodesApi
 from rf_api_client.api.users_api import UsersApi
+from rf_api_client.api.notify_api import NotifyApi
 
 
 DEFAULT_RF_URL = URL('https://app.redforester.com')
@@ -58,6 +59,7 @@ class RfApiClient:
         self.maps = MapsApi(self._session, self._context)
         self.types = NodeTypesApi(self._session, self._context)
         self.nodes = NodesApi(self._session, self._context)
+        self.notify = NotifyApi(self._session, self._context)
 
     @property
     def context(self):
