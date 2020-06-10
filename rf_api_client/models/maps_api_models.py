@@ -17,9 +17,9 @@ class MapDto(BaseModel):
     root_node_id: str
     owner: str
     owner_username: str
-    owner_name: str
-    owner_surname: str
-    owner_avatar: str
+    owner_name: Optional[str]
+    owner_surname: Optional[str]
+    owner_avatar: Optional[str]
     layout: MapLayout
     public: bool
     node_count: int
