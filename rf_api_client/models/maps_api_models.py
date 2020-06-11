@@ -11,13 +11,13 @@ class MapLayout(str, Enum):
 
 
 class MapDefaultUsersAccess(str, Enum):
-    user_invited = "user_invited"
-    user_not_invited = "user_not_invited"
+    user_invited = 'user_invited'
+    user_not_invited = 'user_not_invited'
 
 
 class MapPrivacyType(str, Enum):
-    public = "public"
-    private = "private"
+    public = 'public'
+    private = 'private'
 
 
 class MapDto(BaseModel):

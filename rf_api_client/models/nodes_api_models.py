@@ -113,7 +113,7 @@ class CreateNodePropertiesDto(NodePropertiesDto):
     @classmethod
     def empty(cls) -> 'CreateNodePropertiesDto':
         return cls(
-            global_=GlobalGroupDto(title=""),
+            global_=GlobalGroupDto(title=''),
             by_type={},
             by_user=[],
             by_extension={},
