@@ -19,7 +19,7 @@ class MapsApi(BaseApi):
     async def create_map(self, new_map: NewMapDto) -> MapDto:
         url = self.context.base_url / 'api/maps'
 
-        async with self.session.post(url, json=new_map.dict()) as resp:
+        async with self.session.post(url, json=new_map.dict(by_alias=True)) as resp:
             body = await resp.json()
 
             return MapDto(**body)
