@@ -20,3 +20,8 @@ class NodesApi(BaseApi):
             body = await resp.json()
 
             return NodeDto(**body)
+
+    async def delete_by_id(self, node_id: str):
+        url = self.context.base_url / f'api/nodes/{node_id}'
+
+        await self.session.delete(url)
