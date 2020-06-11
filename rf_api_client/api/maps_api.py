@@ -24,6 +24,11 @@ class MapsApi(BaseApi):
 
             return MapDto(**body)
 
+    async def delete_map_by_id(self, map_id: str):
+        url = self.context.base_url / f'api/maps/{map_id}'
+
+        await self.session.delete(url)
+
     async def get_map_types(self, map_id: str) -> List[NodeTypeDto]:
         url = self.context.base_url / f'api/maps/{map_id}/node_types'
 
