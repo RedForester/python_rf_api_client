@@ -23,3 +23,10 @@ class BaseApi:
     @property
     def context(self):
         return self._context
+
+
+class ClientInternalError(Exception):
+    """
+    If you encounter this exception, then something inside rf_api_client has gone horrible wrong.
+    Probably you should find or open new issue.
+    """

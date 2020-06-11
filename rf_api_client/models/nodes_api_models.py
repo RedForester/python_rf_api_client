@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional, Tuple, Dict
+from typing import List, Optional, Tuple, Dict, Union
 
 from pydantic import BaseModel, Field
 
@@ -16,6 +16,9 @@ class PositionType(str, Enum):
     R = 'R'
     L = 'L'
     P = 'P'
+
+
+NodePosition = Tuple[PositionType, str]
 
 
 class NodeCommonMetaDto(BaseModel):
@@ -83,7 +86,7 @@ class NodeDto(BaseModel):
     map_id: str
     parent: Optional[str]
     original_parent: Optional[str] = Field(alias='originalParent')
-    position: Tuple[PositionType, str]
+    position: NodePosition
     access: NodeAccessType
     hidden: bool
     readers: List[str]
@@ -123,7 +126,7 @@ class CreateNodePropertiesDto(NodePropertiesDto):
 class CreateNodeDto(BaseModel):
     map_id: str
     parent: str
-    position: Tuple[PositionType, str]
+    position: NodePosition
     properties: CreateNodePropertiesDto
     type_id: Optional[str]
 
@@ -131,5 +134,62 @@ class CreateNodeDto(BaseModel):
 class CreateNodeLinkDto(BaseModel):
     map_id: str
     parent: str
-    position: Tuple[PositionType, str]
+    position: NodePosition
     link: str
+
+
+class UserPropertyCreateDto(BaseModel):
+    group: str = 'byUser'
+    key: str
+    value: str
+    type_id: NodePropertyType
+    visible: bool
+
+
+class GlobalPropertyUpdateDto(BaseModel):
+    group: str = 'global'
+    key: str = 'title'
+    value: str
+
+
+class TypePropertyUpdateDto(BaseModel):
+    group: str = 'byType'
+    key: str
+    value: str
+
+
+class UserPropertyUpdateDto(BaseModel):
+    group: str = 'byUser'
+    key: str
+    value: Optional[str]
+    type_id: Optional[NodePropertyType]
+    visible: Optional[bool]
+
+
+class ObjectPropertyCreateOrUpdateDto(BaseModel):
+    group: str = 'style'
+    key: str
+    value: Union[str, int]
+
+
+UpdatePropertiesType = Union[
+    GlobalPropertyUpdateDto, TypePropertyUpdateDto, UserPropertyUpdateDto, ObjectPropertyCreateOrUpdateDto
+]
+
+
+class UserPropertyDeleteDto(BaseModel):
+    group: str = 'byUser'
+    key: str
+
+
+class PropertiesUpdateDto(BaseModel):
+    add: Optional[List[UserPropertyCreateDto]]
+    update: Optional[List[UpdatePropertiesType]]
+    delete: Optional[List[UserPropertyDeleteDto]]
+    rename: Optional[List[str]]
+
+
+class NodeUpdateDto(BaseModel):
+    properties: Optional[PropertiesUpdateDto]
+    type_id: Optional[str]
+    position: Optional[NodePosition]
