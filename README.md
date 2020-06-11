@@ -2,4 +2,4 @@
 
 Asynchronous client for RedForester API.
 
-[pypi package](https://pypi.org/project/rf-api-client/)
+[PyPI package](https://pypi.org/project/rf-api-client/)
