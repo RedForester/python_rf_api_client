@@ -101,3 +101,35 @@ class NodeTreeDto(NodeDto):
 
 
 NodeTreeBodyDto.update_forward_refs()
+
+
+class CreateNodePropertiesDto(NodePropertiesDto):
+    class Config:
+        allow_population_by_field_name = True
+
+    @classmethod
+    def empty(cls) -> 'CreateNodePropertiesDto':
+        return cls(
+            global_=GlobalGroupDto(title=""),
+            by_type={},
+            by_user=[],
+            by_extension={},
+            style=StyleGroupDto()
+        )
+
+    # todo build ?
+
+
+class CreateNodeDto(BaseModel):
+    map_id: str
+    parent: str
+    position: Tuple[PositionType, str]
+    properties: CreateNodePropertiesDto
+    type_id: Optional[str]
+
+
+class CreateNodeLinkDto(BaseModel):
+    map_id: str
+    parent: str
+    position: Tuple[PositionType, str]
+    link: str
