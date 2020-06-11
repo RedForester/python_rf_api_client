@@ -10,6 +10,16 @@ class MapLayout(str, Enum):
     LR = 'LR'
 
 
+class MapDefaultUsersAccess(str, Enum):
+    user_invited = "user_invited"
+    user_not_invited = "user_not_invited"
+
+
+class MapPrivacyType(str, Enum):
+    public = "public"
+    private = "private"
+
+
 class MapDto(BaseModel):
     id: str
     name: str
@@ -25,3 +35,10 @@ class MapDto(BaseModel):
     node_count: int
     user_count: int
     is_admin: bool
+
+
+class NewMapDto(BaseModel):
+    name: str
+    layout: MapLayout
+    default_others: Optional[MapDefaultUsersAccess]
+    privacy_type: Optional[MapPrivacyType]

@@ -1,7 +1,7 @@
 from typing import List
 
 from rf_api_client.api.base_api import BaseApi
-from rf_api_client.models.maps_api_models import MapDto
+from rf_api_client.models.maps_api_models import MapDto, NewMapDto
 from rf_api_client.models.node_types_api_models import NodeTypeDto
 from rf_api_client.models.nodes_api_models import NodeTreeDto
 from rf_api_client.models.users_api_models import UserDto
@@ -12,6 +12,14 @@ class MapsApi(BaseApi):
         url = self.context.base_url / f'api/maps/{map_id}'
 
         async with self.session.get(url) as resp:
+            body = await resp.json()
+
+            return MapDto(**body)
+
+    async def create_map(self, new_map: NewMapDto) -> MapDto:
+        url = self.context.base_url / 'api/maps'
+
+        async with self.session.post(url, json=new_map.dict()) as resp:
             body = await resp.json()
 
             return MapDto(**body)
