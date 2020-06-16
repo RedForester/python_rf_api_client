@@ -93,7 +93,9 @@ class RfApiClient:
             trace_config_ctx: SimpleNamespace,
             params: TraceRequestStartParams
     ):
-        log.debug(f'Starting request {params}')
+        trace_id = str(uuid4())[-6:]
+        trace_config_ctx.trace_id = trace_id
+        log.debug(f'Starting request [{trace_id}] with {params}')
 
     async def on_request_end(
             self,
@@ -101,6 +103,7 @@ class RfApiClient:
             trace_config_ctx: SimpleNamespace,
             params: TraceRequestEndParams
     ):
-        log.debug(f'Ending request {params}')
+        trace_id = trace_config_ctx.trace_id
+        log.debug(f'Ending request [{trace_id}] {params}')
         if self._log_response_body:
             log.debug(await params.response.json())
