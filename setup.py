@@ -25,6 +25,12 @@ setup(
         'pydantic ~= 1.5',
         'yarl ~= 1.4'
     ],
+    extras_require={
+        'dev': [
+            'pytest ~= 5.4',
+            'pytest-asyncio ~= 0.12',
+        ],
+    },
     include_package_data=True,
     zip_safe=False
 )
