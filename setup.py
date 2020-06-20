@@ -29,6 +29,7 @@ setup(
         'dev': [
             'pytest ~= 5.4',
             'pytest-asyncio ~= 0.12',
+            'flake8 ~= 3.8'
         ],
     },
     include_package_data=True,
