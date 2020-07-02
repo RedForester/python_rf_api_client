@@ -1,15 +1,15 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel
+from rf_api_client.models.base_model import ApiBaseModel
 
 
-class DialogSize(BaseModel):
+class DialogSize(ApiBaseModel):
     width: int
     height: int
 
 
-class DialogRequest(BaseModel):
+class DialogRequest(ApiBaseModel):
     user_id: str
     session_id: Optional[str]
     dialog_src: str
@@ -24,14 +24,14 @@ class NotificationType(str, Enum):
     alert = 'alert'
 
 
-class NotifyRequest(BaseModel):
+class NotifyRequest(ApiBaseModel):
     user_id: str
     session_id: Optional[str]
     notification_text: str
     notification_type: Optional[NotificationType]
 
 
-class UrlRequest(BaseModel):
+class UrlRequest(ApiBaseModel):
     user_id: str
     session_id: Optional[str]
     url: str

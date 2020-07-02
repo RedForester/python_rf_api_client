@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from rf_api_client.models.base_model import ApiBaseModel
 
 
-class UserDto(BaseModel):
+class UserDto(ApiBaseModel):
     user_id: str
     username: str
     name: Optional[str]

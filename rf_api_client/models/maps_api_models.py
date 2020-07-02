@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel
+from rf_api_client.models.base_model import ApiBaseModel
 
 
 class MapLayout(str, Enum):
@@ -20,7 +20,7 @@ class MapPrivacyType(str, Enum):
     private = 'private'
 
 
-class MapDto(BaseModel):
+class MapDto(ApiBaseModel):
     id: str
     name: str
     description: Optional[str]
@@ -37,7 +37,7 @@ class MapDto(BaseModel):
     is_admin: bool
 
 
-class NewMapDto(BaseModel):
+class NewMapDto(ApiBaseModel):
     name: str
     layout: MapLayout
     default_others: Optional[MapDefaultUsersAccess]

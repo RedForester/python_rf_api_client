@@ -1,7 +1,7 @@
 from enum import Enum, unique
 from typing import List, Optional
 
-from pydantic import BaseModel
+from rf_api_client.models.base_model import ApiBaseModel
 
 
 @unique
@@ -24,12 +24,12 @@ class NodeTypePropertyOwner(str, Enum):
     # todo find out all values
 
 
-class NodeTypePropertyIcon(BaseModel):
+class NodeTypePropertyIcon(ApiBaseModel):
     img: str
     text: str
 
 
-class NodeTypePropertyDto(BaseModel):
+class NodeTypePropertyDto(ApiBaseModel):
     name: str
     owner_id: str
     owner_type: NodeTypePropertyOwner
@@ -42,7 +42,7 @@ class NodeTypePropertyDto(BaseModel):
     as_icon: bool
 
 
-class NodeTypeDto(BaseModel):
+class NodeTypeDto(ApiBaseModel):
     id: str
     map_id: str
     name: str

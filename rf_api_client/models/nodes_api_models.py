@@ -2,8 +2,9 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Tuple, Dict, Union
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
+from rf_api_client.models.base_model import ApiBaseModel
 from rf_api_client.models.node_types_api_models import NodePropertyType
 
 
@@ -21,7 +22,7 @@ class PositionType(str, Enum):
 NodePosition = Tuple[PositionType, str]
 
 
-class NodeCommonMetaDto(BaseModel):
+class NodeCommonMetaDto(ApiBaseModel):
     creation_timestamp: datetime
     author: str
     last_modified_timestamp: datetime
@@ -41,15 +42,15 @@ class NodeMetaDto(NodeCommonMetaDto):
     leaf: bool
 
 
-class GlobalGroupDto(BaseModel):
+class GlobalGroupDto(ApiBaseModel):
     title: str
 
 
-class StyleGroupDto(BaseModel):
+class StyleGroupDto(ApiBaseModel):
     color: Optional[str]
 
 
-class UserPropertyDto(BaseModel):
+class UserPropertyDto(ApiBaseModel):
     key: str
     value: str
     type_id: NodePropertyType
@@ -59,7 +60,7 @@ class UserPropertyDto(BaseModel):
 DictLikeGroup = Dict[str, Optional[str]]
 
 
-class NodePropertiesDto(BaseModel):
+class NodePropertiesDto(ApiBaseModel):
     global_: GlobalGroupDto = Field(alias='global')
     by_type: DictLikeGroup = Field(alias='byType')
     by_user: List[UserPropertyDto] = Field(alias='byUser')
@@ -67,7 +68,7 @@ class NodePropertiesDto(BaseModel):
     by_extension: DictLikeGroup = Field(alias='byExtension')
 
 
-class NodeBodyDto(BaseModel):
+class NodeBodyDto(ApiBaseModel):
     id: str
     map_id: str
     type_id: Optional[str]
@@ -81,7 +82,7 @@ class NodeBodyDto(BaseModel):
     properties: Optional[NodePropertiesDto]
 
 
-class NodeDto(BaseModel):
+class NodeDto(ApiBaseModel):
     id: str
     map_id: str
     parent: Optional[str]
@@ -123,7 +124,7 @@ class CreateNodePropertiesDto(NodePropertiesDto):
     # todo build ?
 
 
-class CreateNodeDto(BaseModel):
+class CreateNodeDto(ApiBaseModel):
     map_id: str
     parent: str
     position: NodePosition
@@ -131,14 +132,14 @@ class CreateNodeDto(BaseModel):
     type_id: Optional[str]
 
 
-class CreateNodeLinkDto(BaseModel):
+class CreateNodeLinkDto(ApiBaseModel):
     map_id: str
     parent: str
     position: NodePosition
     link: str
 
 
-class UserPropertyCreateDto(BaseModel):
+class UserPropertyCreateDto(ApiBaseModel):
     group: str = 'byUser'
     key: str
     value: str
@@ -146,19 +147,19 @@ class UserPropertyCreateDto(BaseModel):
     visible: bool
 
 
-class GlobalPropertyUpdateDto(BaseModel):
+class GlobalPropertyUpdateDto(ApiBaseModel):
     group: str = 'global'
     key: str = 'title'
     value: str
 
 
-class TypePropertyUpdateDto(BaseModel):
+class TypePropertyUpdateDto(ApiBaseModel):
     group: str = 'byType'
     key: str
     value: str
 
 
-class UserPropertyUpdateDto(BaseModel):
+class UserPropertyUpdateDto(ApiBaseModel):
     group: str = 'byUser'
     key: str
     value: Optional[str]
@@ -166,7 +167,7 @@ class UserPropertyUpdateDto(BaseModel):
     visible: Optional[bool]
 
 
-class ObjectPropertyCreateOrUpdateDto(BaseModel):
+class ObjectPropertyCreateOrUpdateDto(ApiBaseModel):
     group: str = 'style'
     key: str
     value: Union[str, int]
@@ -177,19 +178,19 @@ UpdatePropertiesType = Union[
 ]
 
 
-class UserPropertyDeleteDto(BaseModel):
+class UserPropertyDeleteDto(ApiBaseModel):
     group: str = 'byUser'
     key: str
 
 
-class PropertiesUpdateDto(BaseModel):
+class PropertiesUpdateDto(ApiBaseModel):
     add: Optional[List[UserPropertyCreateDto]]
     update: Optional[List[UpdatePropertiesType]]
     delete: Optional[List[UserPropertyDeleteDto]]
     rename: Optional[List[str]]
 
 
-class NodeUpdateDto(BaseModel):
+class NodeUpdateDto(ApiBaseModel):
     properties: Optional[PropertiesUpdateDto]
     type_id: Optional[str]
     position: Optional[NodePosition]
