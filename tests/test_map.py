@@ -1,8 +1,10 @@
+from typing import List
+
 import pytest
 
 from rf_api_client import RfApiClient
 from rf_api_client.models.nodes_api_models import CreateNodeDto, CreateNodePropertiesDto, PositionType, \
-    CreateNodeLinkDto, NodeUpdateDto, PropertiesUpdateDto, GlobalPropertyUpdateDto
+    CreateNodeLinkDto, NodeUpdateDto, PropertiesUpdateDto, GlobalPropertyUpdateDto, NodeDto, NodeTreeDto
 from tests.conftest import Secret
 from tests.prepare_map import prepare_map
 
@@ -74,3 +76,41 @@ async def test_nodes(secret: Secret, api: RfApiClient):
     repeated_nodes = await api.maps.get_map_nodes(m.id)
 
     assert len(repeated_nodes.body.children) == 0
+
+
+@pytest.mark.asyncio
+async def test_partial_load(secret: Secret, api: RfApiClient):
+    m = await prepare_map(api, secret.developer_prefix, 'test_partial_load')
+
+    async def create_node(parent: str, title: str) -> NodeDto:
+        p = CreateNodePropertiesDto.empty()
+        p.global_.title = title
+        return await api.nodes.create(CreateNodeDto(
+            map_id=m.id,
+            parent=parent,
+            type_id=None,
+            position=(PositionType.R, '1'),
+            properties=p
+        ))
+
+    def flatten(tree: NodeTreeDto) -> List[str]:
+        ids = [tree.id]
+        for child in tree.body.children:
+            ids.extend(flatten(child))
+        return ids
+
+    n1 = await create_node(m.root_node_id, 'first')
+    n2 = await create_node(n1.id, 'second')
+    n3 = await create_node(n2.id, 'third')
+
+    result = flatten(await api.maps.get_map_nodes(m.id, level_count=0))
+    assert result == [m.root_node_id]
+
+    result = flatten(await api.maps.get_map_nodes(m.id, level_count=2))
+    assert result == [m.root_node_id, n1.id, n2.id]
+
+    result = flatten(await api.maps.get_map_nodes(m.id, root_id=n2.id, level_count=0))
+    assert result == [n2.id]
+
+    result = flatten(await api.maps.get_map_nodes(m.id, root_id=n2.id))
+    assert result == [n2.id, n3.id]

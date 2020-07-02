@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from rf_api_client.api.base_api import BaseApi
 from rf_api_client.models.maps_api_models import MapDto, NewMapDto
@@ -53,8 +53,17 @@ class MapsApi(BaseApi):
 
             return [MapDto(**m) for m in body]
 
-    async def get_map_nodes(self, map_id: str) -> NodeTreeDto:
+    async def get_map_nodes(
+            self,
+            map_id: str,
+            root_id: Optional[str] = None,
+            level_count: Optional[int] = None,
+    ) -> NodeTreeDto:
         url = self.context.base_url / f'api/maps/{map_id}/nodes'
+        if root_id is not None:
+            url = url / root_id
+        if level_count is not None:
+            url = url / f'level_count/{level_count}'
 
         async with self.session.get(url) as resp:
             body = await resp.json()
