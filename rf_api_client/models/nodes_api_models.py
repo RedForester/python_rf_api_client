@@ -108,9 +108,6 @@ NodeTreeBodyDto.update_forward_refs()
 
 
 class CreateNodePropertiesDto(NodePropertiesDto):
-    class Config:
-        allow_population_by_field_name = True
-
     @classmethod
     def empty(cls) -> 'CreateNodePropertiesDto':
         return cls(
