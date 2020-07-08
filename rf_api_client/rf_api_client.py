@@ -4,25 +4,54 @@ from uuid import uuid4
 from aiohttp import ClientSession, BasicAuth, TraceConfig, TraceRequestStartParams, TraceRequestEndParams
 from yarl import URL
 
-from rf_api_client.log import main_logger as log
-from rf_api_client.utils import md5
 from rf_api_client.api.base_api import ApiContext
 from rf_api_client.api.maps_api import MapsApi
 from rf_api_client.api.node_types_api import NodeTypesApi
 from rf_api_client.api.nodes_api import NodesApi
-from rf_api_client.api.users_api import UsersApi
 from rf_api_client.api.notify_api import NotifyApi
-
+from rf_api_client.api.users_api import UsersApi
+from rf_api_client.log import main_logger as log
+from rf_api_client.utils import md5
 
 DEFAULT_RF_URL = URL('https://app.redforester.com')
+
+
+class RfAuth:
+    def username(self) -> str:
+        raise NotImplementedError()
+
+    def password(self) -> str:
+        raise NotImplementedError()
+
+
+class UserAuth(RfAuth):
+    def __init__(self, username: str, password: str):
+        self._username = username
+        self._password = md5(password)
+
+    def username(self) -> str:
+        return self._username
+
+    def password(self) -> str:
+        return self._password
+
+
+class ExtensionAuth(RfAuth):
+    def __init__(self, token: str):
+        self._token = token
+
+    def username(self) -> str:
+        return 'extension'
+
+    def password(self) -> str:
+        return self._token
 
 
 class RfApiClient:
     def __init__(
             self,
             *,
-            username: str,
-            password: str,
+            auth: RfAuth,
             session_id: str = None,
             base_url: URL = DEFAULT_RF_URL,
             read_timeout: float = 60,
@@ -35,8 +64,8 @@ class RfApiClient:
             log.info(f'Supplied session id is {session_id}')
 
         self._context = ApiContext(
-            username=username,
-            password=md5(password),
+            username=auth.username(),
+            password=auth.password(),
             session_id=session_id,
             base_url=base_url,
             read_timeout=read_timeout

@@ -2,6 +2,7 @@ import asyncio
 import os
 
 from rf_api_client import RfApiClient
+from rf_api_client.rf_api_client import UserAuth
 
 USERNAME = os.getenv('USERNAME')
 PASSWORD = os.getenv('PASSWORD')
@@ -9,8 +10,7 @@ PASSWORD = os.getenv('PASSWORD')
 
 async def auth():
     async with RfApiClient(
-        username=USERNAME,
-        password=PASSWORD
+        auth=UserAuth(USERNAME, PASSWORD),
     ) as api_client:
         user = await api_client.users.get_current()
         print('Current user is', user)

@@ -6,6 +6,7 @@ from rf_api_client import RfApiClient
 from rf_api_client.models.node_types_api_models import NodePropertyType
 from rf_api_client.models.nodes_api_models import NodeUpdateDto, PropertiesUpdateDto, GlobalPropertyUpdateDto, \
     UserPropertyCreateDto, CreateNodePropertiesDto, CreateNodeDto, PositionType
+from rf_api_client.rf_api_client import UserAuth
 
 USERNAME = os.getenv('USERNAME')
 PASSWORD = os.getenv('PASSWORD')
@@ -15,8 +16,7 @@ MAP_ID = os.getenv('MAP_ID')
 
 async def create_and_update_node():
     async with RfApiClient(
-            username=USERNAME,
-            password=PASSWORD
+        auth=UserAuth(USERNAME, PASSWORD),
     ) as api_client:
         sleep_time = 5.0
 

@@ -3,6 +3,7 @@ from pydantic import BaseSettings
 from yarl import URL
 
 from rf_api_client import RfApiClient
+from rf_api_client.rf_api_client import UserAuth
 
 
 class Secret(BaseSettings):
@@ -23,8 +24,7 @@ def secret():
 @pytest.fixture
 async def api(secret: Secret):
     async with RfApiClient(
-        username=secret.username,
-        password=secret.password,
+        auth=UserAuth(secret.username, secret.password),
         base_url=URL(secret.base_url)
     ) as api:
         yield api

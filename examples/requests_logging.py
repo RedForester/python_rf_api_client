@@ -4,6 +4,7 @@ import os
 
 from rf_api_client import RfApiClient
 from rf_api_client.log import main_logger
+from rf_api_client.rf_api_client import UserAuth
 
 USERNAME = os.getenv('USERNAME')
 PASSWORD = os.getenv('PASSWORD')
@@ -15,8 +16,7 @@ async def main():
     main_logger.setLevel(logging.DEBUG)
 
     async with RfApiClient(
-        username=USERNAME,
-        password=PASSWORD,
+        auth=UserAuth(USERNAME, PASSWORD),
         log_response_body=True  # log response bodies
     ) as api_client:
         user = await api_client.users.get_current()
