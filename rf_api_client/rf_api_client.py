@@ -17,9 +17,11 @@ DEFAULT_RF_URL = URL('https://app.redforester.com')
 
 
 class RfAuth:
+    @property
     def username(self) -> str:
         raise NotImplementedError()
 
+    @property
     def password(self) -> str:
         raise NotImplementedError()
 
@@ -29,9 +31,11 @@ class UserAuth(RfAuth):
         self._username = username
         self._password = md5(password)
 
+    @property
     def username(self) -> str:
         return self._username
 
+    @property
     def password(self) -> str:
         return self._password
 
@@ -40,9 +44,11 @@ class ExtensionAuth(RfAuth):
     def __init__(self, token: str):
         self._token = token
 
+    @property
     def username(self) -> str:
         return 'extension'
 
+    @property
     def password(self) -> str:
         return self._token
 
@@ -64,8 +70,8 @@ class RfApiClient:
             log.info(f'Supplied session id is {session_id}')
 
         self._context = ApiContext(
-            username=auth.username(),
-            password=auth.password(),
+            username=auth.username,
+            password=auth.password,
             session_id=session_id,
             base_url=base_url,
             read_timeout=read_timeout
