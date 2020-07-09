@@ -10,7 +10,11 @@ from rf_api_client.models.node_types_api_models import NodePropertyType
 
 class NodeAccessType(str, Enum):
     user_all = 'user_all'
-    # todo find out all values
+    user_rwh = 'user_rwh'
+    user_rw = 'user_rw'
+    user_rc = 'user_rc'
+    user_r = 'user_r'
+    user_none = 'user_none'
 
 
 class PositionType(str, Enum):
@@ -23,10 +27,10 @@ NodePosition = Tuple[PositionType, str]
 
 
 class NodeCommonMetaDto(ApiBaseModel):
-    creation_timestamp: datetime
-    author: str
-    last_modified_timestamp: datetime
-    last_modified_user: str
+    creation_timestamp: Optional[datetime]
+    author: Optional[str]
+    last_modified_timestamp: Optional[datetime]
+    last_modified_user: Optional[str]
 
     can_move: bool
     editable: bool
@@ -35,7 +39,7 @@ class NodeCommonMetaDto(ApiBaseModel):
 
 
 class NodeBodyMetaDto(NodeCommonMetaDto):
-    subscribed: bool
+    subscribed: bool = False
 
 
 class NodeMetaDto(NodeCommonMetaDto):
@@ -74,10 +78,10 @@ class NodeBodyDto(ApiBaseModel):
     type_id: Optional[str]
     parent: Optional[str]
     children: List[str]
-    access: NodeAccessType
+    access: NodeAccessType = NodeAccessType.user_none
     unread_comments_count: int
     comments_count: int
-    readers: List[str]
+    readers: List[str] = []
     meta: NodeBodyMetaDto
     properties: Optional[NodePropertiesDto]
 
@@ -90,8 +94,8 @@ class NodeDto(ApiBaseModel):
     position: NodePosition
     access: NodeAccessType
     hidden: bool
-    readers: List[str]
-    node_level: int = Field(alias='nodelevel')
+    readers: List[str] = []
+    node_level: int = Field(0, alias='nodelevel')
     meta: NodeMetaDto
     body: NodeBodyDto
 
