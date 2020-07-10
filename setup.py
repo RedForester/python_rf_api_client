@@ -14,7 +14,7 @@ setup(
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
     ],
-    url='https://github.com/RedForester/rf_api_client',
+    url='https://github.com/RedForester/python_rf_api_client',
     author='Red Forester',
     author_email='tech@redforester.com',
     license='MIT',
