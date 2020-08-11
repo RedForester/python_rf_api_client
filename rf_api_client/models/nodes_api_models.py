@@ -56,7 +56,7 @@ class StyleGroupDto(ApiBaseModel):
 
 class UserPropertyDto(ApiBaseModel):
     key: str
-    value: str
+    value: Optional[str]
     type_id: NodePropertyType
     visible: bool
 
