@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='rf_api_client',
-    version='0.1.0',
+    version='0.1.1',
     description='RedForester API client',
     long_description=long_description,
     long_description_content_type='text/markdown',
