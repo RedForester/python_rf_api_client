@@ -30,7 +30,7 @@ class MapDto(ApiBaseModel):
     owner_name: Optional[str]
     owner_surname: Optional[str]
     owner_avatar: Optional[str]
-    layout: MapLayout
+    layout: Optional[MapLayout]
     public: bool
     node_count: int
     user_count: int
@@ -39,6 +39,6 @@ class MapDto(ApiBaseModel):
 
 class NewMapDto(ApiBaseModel):
     name: str
-    layout: MapLayout
+    layout: Optional[MapLayout]
     default_others: Optional[MapDefaultUsersAccess]
     privacy_type: Optional[MapPrivacyType]
