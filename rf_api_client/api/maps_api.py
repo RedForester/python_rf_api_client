@@ -4,6 +4,7 @@ from rf_api_client.api.base_api import BaseApi
 from rf_api_client.models.maps_api_models import MapDto, NewMapDto
 from rf_api_client.models.node_types_api_models import NodeTypeDto
 from rf_api_client.models.nodes_api_models import NodeTreeDto
+from rf_api_client.models.search_hit import SearchHitDto, SearchResponse
 from rf_api_client.models.users_api_models import UserDto
 
 
@@ -69,3 +70,26 @@ class MapsApi(BaseApi):
             body = await resp.json()
 
             return NodeTreeDto(**body)
+
+    async def search_nodes(
+            self,
+            query: str,
+            map_ids: List[str],
+            full_docs: bool = True,
+            hits_limit: int = 50,
+            root_id: str = None
+    ) -> List[SearchHitDto]:
+        url = self.context.base_url / 'api/search'
+
+        params = dict(
+            full_docs=full_docs,
+            hits_limit=hits_limit,
+            map_ids=map_ids,
+            query=query,
+            root_id=root_id
+        )
+
+        async with self.session.post(url, json=params) as resp:
+            body = await resp.json()
+
+        return SearchResponse(**body).hits
