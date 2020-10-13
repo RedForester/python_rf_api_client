@@ -1,3 +1,4 @@
+import asyncio
 from typing import List
 
 import pytest
@@ -139,6 +140,9 @@ async def test_search_nodes(secret: Secret, api: RfApiClient):
         position=(PositionType.R, '1'),
         properties=p
     ))
+
+    # для того что бы рф успел проиндексировать узлы
+    await asyncio.sleep(5)
 
     result = await api.maps.search_nodes('node', [m.id])
     assert len(result) == 2
