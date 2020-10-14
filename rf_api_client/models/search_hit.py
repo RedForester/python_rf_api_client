@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from rf_api_client.models.base_model import ApiBaseModel
@@ -19,7 +20,7 @@ class SearchHitDto(ApiBaseModel):
     color: Optional[str]
     props: List[HitPropDto]
 
-    timestamp: str
+    timestamp: datetime
     score: float
 
 

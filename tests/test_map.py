@@ -141,7 +141,7 @@ async def test_search_nodes(secret: Secret, api: RfApiClient):
         properties=p
     ))
 
-    # для того что бы рф успел проиндексировать узлы
+    # rf must have time to index new nodes
     await asyncio.sleep(5)
 
     result = await api.maps.search_nodes('node', [m.id])
