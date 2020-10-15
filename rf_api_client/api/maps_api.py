@@ -71,6 +71,19 @@ class MapsApi(BaseApi):
 
             return NodeTreeDto(**body)
 
+    async def get_map_nodes_on_path(
+            self,
+            map_id: str,
+            from_id: str,
+            to_id: str,
+    ) -> NodeTreeDto:
+        url = self.context.base_url / f'api/maps/{map_id}/nodes/path/{from_id}/to/{to_id}'
+
+        async with self.session.get(url) as resp:
+            body = await resp.json()
+
+            return NodeTreeDto(**body)
+
     async def search_nodes(
             self,
             query: str,
