@@ -10,6 +10,13 @@ from tests.conftest import Secret
 from tests.prepare_map import prepare_map
 
 
+def flatten(tree: NodeTreeDto) -> List[str]:
+    ids = [tree.id]
+    for child in tree.body.children:
+        ids.extend(flatten(child))
+    return ids
+
+
 @pytest.mark.asyncio
 async def test_login(secret: Secret, api: RfApiClient):
     user = await api.users.get_current()
@@ -94,12 +101,6 @@ async def test_partial_load(secret: Secret, api: RfApiClient):
             properties=p
         ))
 
-    def flatten(tree: NodeTreeDto) -> List[str]:
-        ids = [tree.id]
-        for child in tree.body.children:
-            ids.extend(flatten(child))
-        return ids
-
     n1 = await create_node(m.root_node_id, 'first')
     n2 = await create_node(n1.id, 'second')
     n3 = await create_node(n2.id, 'third')
@@ -149,3 +150,65 @@ async def test_search_nodes(secret: Secret, api: RfApiClient):
 
     result = await api.maps.search_nodes('first', [m.id])
     assert len(result) > 0
+
+
+@pytest.mark.asyncio
+async def test_nodes_on_path(secret: Secret, api: RfApiClient):
+    m = await prepare_map(api, secret.developer_prefix, 'test_nodes_on_path')
+
+    p = CreateNodePropertiesDto.empty()
+    p.global_.title = '1.1 node'
+    await api.nodes.create(CreateNodeDto(
+        map_id=m.id,
+        parent=m.root_node_id,
+        type_id=None,
+        position=(PositionType.R, '1'),
+        properties=p
+    ))
+
+    p = CreateNodePropertiesDto.empty()
+    p.global_.title = '1.2 node'
+    parent = await api.nodes.create(CreateNodeDto(
+        map_id=m.id,
+        parent=m.root_node_id,
+        type_id=None,
+        position=(PositionType.R, '1'),
+        properties=p
+    ))
+
+    p = CreateNodePropertiesDto.empty()
+    p.global_.title = '1.2.1 node'
+    await api.nodes.create(CreateNodeDto(
+        map_id=m.id,
+        parent=parent.id,
+        type_id=None,
+        position=(PositionType.R, '1'),
+        properties=p
+    ))
+
+    p = CreateNodePropertiesDto.empty()
+    p.global_.title = '1.2.2 node'
+    node = await api.nodes.create(CreateNodeDto(
+        map_id=m.id,
+        parent=parent.id,
+        type_id=None,
+        position=(PositionType.R, '1'),
+        properties=p
+    ))
+
+    result = flatten(await api.maps.get_map_nodes_on_path(
+        m.id,
+        m.root_node_id,
+        m.root_node_id,
+    ))
+    assert len(result) == 1
+
+    result = flatten(await api.maps.get_map_nodes_on_path(
+        m.id,
+        m.root_node_id,
+        node.id
+    ))
+    assert len(result) == 3
+
+    result = flatten(await api.maps.get_map_nodes(m.id, m.root_node_id))
+    assert len(result) == 5
