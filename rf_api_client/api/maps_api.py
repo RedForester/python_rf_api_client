@@ -108,6 +108,4 @@ class MapsApi(BaseApi):
         async with self.session.post(url, json=params) as resp:
             body = await resp.json()
 
-        print(body)
-
         return SearchResponse(**body).hits
