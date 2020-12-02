@@ -4,7 +4,7 @@ from rf_api_client.api.base_api import BaseApi
 from rf_api_client.models.maps_api_models import MapDto, NewMapDto
 from rf_api_client.models.node_types_api_models import NodeTypeDto
 from rf_api_client.models.nodes_api_models import NodeTreeDto
-from rf_api_client.models.search_hit import SearchHitDto, SearchResponse, SearchResponseAdvanced
+from rf_api_client.models.search_hit import SearchHitDto, SearchResponse
 from rf_api_client.models.users_api_models import UserDto
 
 
@@ -114,7 +114,7 @@ class MapsApi(BaseApi):
             full_docs: bool = True,
             hits_limit: int = 50,
             root_id: str = None,
-    ) -> SearchResponseAdvanced:
+    ) -> Dict[str, Any]:
         url = self.context.base_url / 'api/search/advanced'
 
         params = dict(
@@ -128,4 +128,6 @@ class MapsApi(BaseApi):
         async with self.session.post(url, json=params) as resp:
             body = await resp.json()
 
-        return SearchResponseAdvanced(**body)
+        return dict(
+            **body,
+        )

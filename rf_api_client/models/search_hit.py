@@ -27,8 +27,3 @@ class SearchHitDto(ApiBaseModel):
 class SearchResponse(ApiBaseModel):
     hits: List[SearchHitDto]
     original_query: str
-
-
-class SearchResponseAdvanced(ApiBaseModel):
-    hits: Optional[Any]
-    original_query: Union[str, Dict[str, Any]]

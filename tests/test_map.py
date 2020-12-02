@@ -159,7 +159,7 @@ async def test_search_nodes(secret: Secret, api: RfApiClient):
         },
         map_ids=[m.id],
     )
-    assert len(result.hits) == 0
+    assert len(result.get('hits')) == 0
 
     result = await api.maps.search_nodes_advanced(
         {
@@ -169,7 +169,7 @@ async def test_search_nodes(secret: Secret, api: RfApiClient):
         },
         map_ids=[m.id],
     )
-    assert len(result.hits) > 0
+    assert len(result.get('hits')) > 0
 
 
 @pytest.mark.asyncio
