@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Any, Union, Dict
 
 from rf_api_client.api.base_api import BaseApi
 from rf_api_client.models.maps_api_models import MapDto, NewMapDto
@@ -86,13 +86,16 @@ class MapsApi(BaseApi):
 
     async def search_nodes(
             self,
-            query: str,
+            query: Union[str, Dict[str, Any]],
             map_ids: List[str],
             full_docs: bool = True,
             hits_limit: int = 50,
-            root_id: str = None
+            root_id: str = None,
+            is_advanced: bool = False
     ) -> List[SearchHitDto]:
         url = self.context.base_url / 'api/search'
+        if is_advanced:
+            url /= 'advanced'
 
         params = dict(
             full_docs=full_docs,
@@ -104,5 +107,7 @@ class MapsApi(BaseApi):
 
         async with self.session.post(url, json=params) as resp:
             body = await resp.json()
+
+        print(body)
 
         return SearchResponse(**body).hits

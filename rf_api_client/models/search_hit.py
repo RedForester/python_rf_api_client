@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Union, Dict, Any
 
 from rf_api_client.models.base_model import ApiBaseModel
 
@@ -26,4 +26,4 @@ class SearchHitDto(ApiBaseModel):
 
 class SearchResponse(ApiBaseModel):
     hits: List[SearchHitDto]
-    original_query: str
+    original_query: Union[str, Dict[str, Any]]
