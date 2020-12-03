@@ -151,6 +151,26 @@ async def test_search_nodes(secret: Secret, api: RfApiClient):
     result = await api.maps.search_nodes('first', [m.id])
     assert len(result) > 0
 
+    result = await api.maps.search_nodes_advanced(
+        {
+            "query_string": {
+                "query": "type: \"some_type\"",
+            }
+        },
+        map_ids=[m.id],
+    )
+    assert len(result.get('hits')) == 0
+
+    result = await api.maps.search_nodes_advanced(
+        {
+            "query_string": {
+                "query": "title: \"first\"",
+            }
+        },
+        map_ids=[m.id],
+    )
+    assert len(result.get('hits')) > 0
+
 
 @pytest.mark.asyncio
 async def test_nodes_on_path(secret: Secret, api: RfApiClient):
