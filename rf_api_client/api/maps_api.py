@@ -114,7 +114,8 @@ class MapsApi(BaseApi):
             full_docs: bool = True,
             hits_limit: int = 50,
             root_id: str = None,
-    ) -> Dict[str, Any]:
+            with_node_links: bool = False,
+    ) -> List[SearchHitDto]:
         url = self.context.base_url / 'api/search/advanced'
 
         params = dict(
@@ -122,12 +123,11 @@ class MapsApi(BaseApi):
             hits_limit=hits_limit,
             map_ids=map_ids,
             query=query,
-            root_id=root_id
+            root_id=root_id,
+            with_node_links=with_node_links,
         )
 
         async with self.session.post(url, json=params) as resp:
             body = await resp.json()
 
-        return dict(
-            **body,
-        )
+        return SearchResponse(**body).hits
