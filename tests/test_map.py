@@ -1,4 +1,3 @@
-import asyncio
 from typing import List
 
 import pytest
@@ -116,60 +115,6 @@ async def test_partial_load(secret: Secret, api: RfApiClient):
 
     result = flatten(await api.maps.get_map_nodes(m.id, root_id=n2.id))
     assert result == [n2.id, n3.id]
-
-
-@pytest.mark.asyncio
-async def test_search_nodes(secret: Secret, api: RfApiClient):
-    m = await prepare_map(api, secret.developer_prefix, 'test_search_nodes')
-
-    p = CreateNodePropertiesDto.empty()
-    p.global_.title = 'first node'
-    await api.nodes.create(CreateNodeDto(
-        map_id=m.id,
-        parent=m.root_node_id,
-        type_id=None,
-        position=(PositionType.R, '1'),
-        properties=p
-    ))
-
-    p = CreateNodePropertiesDto.empty()
-    p.global_.title = 'second node'
-    await api.nodes.create(CreateNodeDto(
-        map_id=m.id,
-        parent=m.root_node_id,
-        type_id=None,
-        position=(PositionType.R, '1'),
-        properties=p
-    ))
-
-    # rf must have time to index new nodes
-    await asyncio.sleep(5)
-
-    result = await api.maps.search_nodes('node', [m.id])
-    assert len(result) > 0
-
-    result = await api.maps.search_nodes('first', [m.id])
-    assert len(result) > 0
-
-    result = await api.maps.search_nodes_advanced(
-        {
-            "query_string": {
-                "query": "type: \"some_type\"",
-            }
-        },
-        map_ids=[m.id],
-    )
-    assert len(result.get('hits')) == 0
-
-    result = await api.maps.search_nodes_advanced(
-        {
-            "query_string": {
-                "query": "title: \"first\"",
-            }
-        },
-        map_ids=[m.id],
-    )
-    assert len(result.get('hits')) > 0
 
 
 @pytest.mark.asyncio
