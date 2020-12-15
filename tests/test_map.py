@@ -171,6 +171,19 @@ async def test_search_nodes(secret: Secret, api: RfApiClient):
     )
     assert len(result) > 0
 
+    result = await api.maps.search_nodes_aggregation(
+        query={
+            "match_all": {},
+        },
+        aggs={
+            "top_hits_agg": {
+                "top_hits": {},
+            },
+        },
+        map_ids=[m.id],
+    )
+    assert len(result["top_hits_agg"]["hits"]) > 0
+
 
 @pytest.mark.asyncio
 async def test_nodes_on_path(secret: Secret, api: RfApiClient):

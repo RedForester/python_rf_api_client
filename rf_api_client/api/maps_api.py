@@ -131,3 +131,26 @@ class MapsApi(BaseApi):
             body = await resp.json()
 
         return SearchResponse(**body).hits
+
+    async def search_nodes_aggregation(
+            self,
+            query: Dict[str, Any],
+            aggs: Dict[str, Any],
+            map_ids: List[str],
+            root_id: str = None,
+            with_node_links: bool = False,
+    ) -> Dict[str, Any]:
+        url = self.context.base_url / 'api/search/aggregation'
+
+        params = dict(
+            query=query,
+            aggs=aggs,
+            map_ids=map_ids,
+            root_id=root_id,
+            with_node_links=with_node_links,
+        )
+
+        async with self.session.post(url, json=params) as resp:
+            body = await resp.json()
+
+        return body
