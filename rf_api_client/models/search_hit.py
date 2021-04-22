@@ -14,6 +14,7 @@ class SearchHitDto(ApiBaseModel):
     id: str
     src_id: Optional[str]
     map_id: str
+    parent: Optional[str]
     title: str
     type: str
     type_id: str
@@ -22,6 +23,7 @@ class SearchHitDto(ApiBaseModel):
     props: List[HitPropDto]
 
     timestamp: datetime
+    last_modified_timestamp: datetime
     score: float
 
 
