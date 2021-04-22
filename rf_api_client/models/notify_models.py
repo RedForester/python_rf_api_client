@@ -13,6 +13,7 @@ class DialogRequest(ApiBaseModel):
     user_id: str
     session_id: Optional[str]
     dialog_src: str
+    dialog_title: Optional[str]
     dialog_size: Optional[DialogSize]
 
 
