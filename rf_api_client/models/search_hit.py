@@ -12,6 +12,7 @@ class HitPropDto(ApiBaseModel):
 
 class SearchHitDto(ApiBaseModel):
     id: str
+    src_id: Optional[str]
     map_id: str
     title: str
     type: str
