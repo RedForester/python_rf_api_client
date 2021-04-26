@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from rf_api_client.models.base_model import ApiBaseModel
 
@@ -16,6 +16,14 @@ class UserDto(ApiBaseModel):
     timezone: Optional[str]  # Europe/Moscow
 
 
+class TagDto(ApiBaseModel):
+    id: str
+    name: str
+    removable: bool
+
+
 class CurrentUserDto(UserDto):
     registration_date: datetime
     kv_session: str
+    last_accessed: Optional[datetime]
+    tags: List[TagDto]
