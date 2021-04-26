@@ -10,8 +10,10 @@ class UserDto(ApiBaseModel):
     name: Optional[str]
     surname: Optional[str]
     avatar: Optional[str]
-    birthday: Optional[datetime]  # todo check
+    birthday: Optional[datetime]
     is_extension_user: Optional[bool]
+    language: Optional[str]  # en-US
+    timezone: Optional[str]  # Europe/Moscow
 
 
 class CurrentUserDto(UserDto):
