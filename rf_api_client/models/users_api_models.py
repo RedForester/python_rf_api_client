@@ -11,9 +11,9 @@ class UserDto(ApiBaseModel):
     surname: Optional[str]
     avatar: Optional[str]
     birthday: Optional[datetime]
-    is_extension_user: Optional[bool]
-    language: Optional[str]  # en-US
-    timezone: Optional[str]  # Europe/Moscow
+    is_extension_user: bool
+    language: str  # en-US
+    timezone: str  # Europe/Moscow
 
 
 class TagDto(ApiBaseModel):
