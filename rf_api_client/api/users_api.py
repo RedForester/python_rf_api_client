@@ -11,7 +11,7 @@ class UsersApi(BaseApi):
 
             return CurrentUserDto(**body)
 
-    async def get_by_id(self, user_id: str):
+    async def get_by_id(self, user_id: str) -> UserDto:
         url = self.context.base_url / f'api/user/{user_id}'
 
         async with self.session.get(url) as resp:
