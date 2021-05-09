@@ -9,6 +9,7 @@ from rf_api_client.api.maps_api import MapsApi
 from rf_api_client.api.node_types_api import NodeTypesApi
 from rf_api_client.api.nodes_api import NodesApi
 from rf_api_client.api.notify_api import NotifyApi
+from rf_api_client.api.tags_api import TagsApi
 from rf_api_client.api.users_api import UsersApi
 from rf_api_client.log import main_logger as log
 from rf_api_client.utils import md5
@@ -95,6 +96,7 @@ class RfApiClient:
         self.types = NodeTypesApi(self._session, self._context)
         self.nodes = NodesApi(self._session, self._context)
         self.notify = NotifyApi(self._session, self._context)
+        self.tags = TagsApi(self._session, self._context)
 
     @property
     def context(self):
