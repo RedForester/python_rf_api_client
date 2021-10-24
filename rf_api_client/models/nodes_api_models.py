@@ -195,3 +195,29 @@ class NodeUpdateDto(ApiBaseModel):
     properties: Optional[PropertiesUpdateDto]
     type_id: Optional[str]
     position: Optional[NodePosition]
+
+
+class InsertOptions(ApiBaseModel):
+    comments: bool = True
+    styleProperties: bool = True
+    userProperties: bool = True
+    quiet: bool = False
+
+
+class NodeInsertOptions(ApiBaseModel):
+    # Move (cut) or copy operation
+    move: bool
+
+    # Apply operation for a single node or branch
+    for_branch: bool
+
+    # These options are for copy operation,
+    #  InsertOptions(comments=False, styleProperties=False, userProperties=False, quiet=False) if not specified
+    insert_options: Optional[InsertOptions] = None
+
+    # Count of tree levels in response, all if not specified
+    level_count: Optional[int] = None
+
+
+class NodeInsertResult(ApiBaseModel):
+    root: NodeTreeDto

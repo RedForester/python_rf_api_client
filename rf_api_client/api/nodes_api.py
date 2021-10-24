@@ -1,7 +1,8 @@
 from typing import Union
 
 from rf_api_client.api.base_api import BaseApi, ClientInternalError
-from rf_api_client.models.nodes_api_models import NodeDto, CreateNodeDto, CreateNodeLinkDto, NodeUpdateDto
+from rf_api_client.models.nodes_api_models import NodeDto, CreateNodeDto, CreateNodeLinkDto, NodeUpdateDto, \
+    NodeInsertOptions, NodeInsertResult
 
 
 class NodesApi(BaseApi):
@@ -39,3 +40,10 @@ class NodesApi(BaseApi):
         url = self.context.base_url / f'api/nodes/{node_id}'
 
         await self.session.delete(url)
+
+    async def insert_to(self, node_id: str, new_parent_id: str, options: NodeInsertOptions) -> NodeInsertResult:
+        url = self.context.base_url / f'api/nodes/{node_id}/insert_to/{new_parent_id}'
+
+        async with self.session.post(url, json=options.dict(by_alias=True)) as resp:
+            body = await resp.json()
+            return NodeInsertResult(**body)

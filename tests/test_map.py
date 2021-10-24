@@ -4,7 +4,8 @@ import pytest
 
 from rf_api_client import RfApiClient
 from rf_api_client.models.nodes_api_models import CreateNodeDto, CreateNodePropertiesDto, PositionType, \
-    CreateNodeLinkDto, NodeUpdateDto, PropertiesUpdateDto, GlobalPropertyUpdateDto, NodeDto, NodeTreeDto
+    CreateNodeLinkDto, NodeUpdateDto, PropertiesUpdateDto, GlobalPropertyUpdateDto, NodeDto, NodeTreeDto, \
+    NodeInsertOptions
 from tests.conftest import Secret
 from tests.prepare_map import prepare_map
 
@@ -177,3 +178,78 @@ async def test_nodes_on_path(secret: Secret, api: RfApiClient):
 
     result = flatten(await api.maps.get_map_nodes(m.id, m.root_node_id))
     assert len(result) == 5
+
+
+@pytest.mark.asyncio
+async def test_copy_cut_nodes(secret: Secret, api: RfApiClient):
+    m = await prepare_map(api, secret.developer_prefix, 'test_copy_cut_nodes')
+
+    p = CreateNodePropertiesDto.empty()
+    p.global_.title = 'source'
+    source_node = await api.nodes.create(CreateNodeDto(
+        map_id=m.id,
+        parent=m.root_node_id,
+        type_id=None,
+        position=(PositionType.R, '1'),
+        properties=p
+    ))
+
+    p = CreateNodePropertiesDto.empty()
+    p.global_.title = 'test_node'
+    test_node = await api.nodes.create(CreateNodeDto(
+        map_id=m.id,
+        parent=source_node.id,
+        type_id=None,
+        position=(PositionType.P, '1'),
+        properties=p
+    ))
+
+    p = CreateNodePropertiesDto.empty()
+    p.global_.title = 'first_child'
+    first_child = await api.nodes.create(CreateNodeDto(
+        map_id=m.id,
+        parent=test_node.id,
+        type_id=None,
+        position=(PositionType.P, '1'),
+        properties=p
+    ))
+
+    p = CreateNodePropertiesDto.empty()
+    p.global_.title = 'target'
+    target_node = await api.nodes.create(CreateNodeDto(
+        map_id=m.id,
+        parent=m.root_node_id,
+        type_id=None,
+        position=(PositionType.L, '1'),
+        properties=p
+    ))
+
+    all_nodes_before = {m.root_node_id, source_node.id, test_node.id, first_child.id, target_node.id}
+    all_nodes = set(flatten(await api.maps.get_map_nodes(m.id)))
+    assert all_nodes == all_nodes_before
+
+    # Copy test
+    resp = await api.nodes.insert_to(test_node.id, target_node.id, NodeInsertOptions(move=False, for_branch=True))
+    copied_nodes = flatten(resp.root)
+    assert len(copied_nodes) == 2
+
+    target_branch_after = {target_node.id, *copied_nodes}
+    target_branch = set(flatten(await api.maps.get_map_nodes(m.id, root_id=target_node.id)))
+    assert target_branch == target_branch_after
+
+    # Cut test
+    await api.nodes.insert_to(test_node.id, target_node.id, NodeInsertOptions(move=True, for_branch=True))
+
+    source_branch_after = {source_node.id}
+    source_branch = set(flatten(await api.maps.get_map_nodes(m.id, root_id=source_node.id)))
+    assert source_branch == source_branch_after
+
+    # fixme After cut, the backend only returns one node
+    # target_branch_after = {*target_branch_after, *cut_nodes}
+    # target_branch = set(flatten(await api.maps.get_map_nodes(m.id, root_id=target_node.id)))
+    # assert target_branch == target_branch_after
+
+    target_branch = set(flatten(await api.maps.get_map_nodes(m.id, root_id=target_node.id)))
+    assert len(target_branch) == 5
+
+    # todo Test more variants (for_branch, level_count, insert_options for copy)
