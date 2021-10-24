@@ -14,7 +14,7 @@ class NodesApi(BaseApi):
 
             return NodeDto(**body)
 
-    async def create(self, node: Union[CreateNodeDto, CreateNodeLinkDto]):
+    async def create(self, node: Union[CreateNodeDto, CreateNodeLinkDto]) -> NodeDto:
         url = self.context.base_url / 'api/nodes'
 
         async with self.session.post(url, json=node.dict(by_alias=True)) as resp:
@@ -22,7 +22,7 @@ class NodesApi(BaseApi):
 
             return NodeDto(**body)
 
-    async def update_by_id(self, node_id: str, update: NodeUpdateDto):
+    async def update_by_id(self, node_id: str, update: NodeUpdateDto) -> NodeDto:
         url = self.context.base_url / f'api/nodes/{node_id}'
 
         j = update.dict(by_alias=True, exclude_none=True)
