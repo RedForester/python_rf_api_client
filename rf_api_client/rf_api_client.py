@@ -5,6 +5,7 @@ from aiohttp import ClientSession, BasicAuth, TraceConfig, TraceRequestStartPara
 from yarl import URL
 
 from rf_api_client.api.base_api import ApiContext
+from rf_api_client.api.files_api import FilesApi
 from rf_api_client.api.maps_api import MapsApi
 from rf_api_client.api.node_types_api import NodeTypesApi
 from rf_api_client.api.nodes_api import NodesApi
@@ -99,6 +100,7 @@ class RfApiClient:
         self.comments = CommentsApi(self._session, self._context)
         self.notify = NotifyApi(self._session, self._context)
         self.tags = TagsApi(self._session, self._context)
+        self.files = FilesApi(self._session, self._context)
 
     @property
     def context(self):

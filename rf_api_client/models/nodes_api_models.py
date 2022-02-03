@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Tuple, Dict, Union
@@ -59,6 +60,30 @@ class UserPropertyDto(ApiBaseModel):
     value: Optional[str]
     type_id: NodePropertyType
     visible: bool
+
+
+class FileInfoDto(ApiBaseModel):
+    name: str  # file name for user
+    filepath: str  # same as UploadFileResponse.file_id
+    last_modified_timestamp: datetime = Field(alias='lastModifiedTimestamp')  # ISO 8601
+    last_modified_user: str = Field(alias='lastModifiedUser')
+
+
+class FilePropertyValue:
+    """
+    File property value is List[FileInfoDto] serialized to string, this is helper to work with it
+    """
+
+    class __Serializer(ApiBaseModel):
+        __root__: List[FileInfoDto]
+
+    @staticmethod
+    def from_string(value: str) -> List[FileInfoDto]:
+        return FilePropertyValue.__Serializer(__root__=json.loads(value)).__root__
+
+    @staticmethod
+    def to_string(files: List[FileInfoDto]) -> str:
+        return FilePropertyValue.__Serializer(__root__=files).json(by_alias=True)
 
 
 DictLikeGroup = Dict[str, Optional[str]]
